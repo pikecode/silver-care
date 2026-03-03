@@ -3,6 +3,8 @@ import authRouter from './routes/auth'
 import healthRouter from './routes/health'
 import medicationRouter from './routes/medication'
 import healthRecordsRouter from './routes/health-records'
+import reportsRouter from './routes/reports'
+import alertsRouter from './routes/alerts'
 
 export function createServer(): Express {
   const app = express()
@@ -12,6 +14,8 @@ export function createServer(): Express {
   app.use('/api/v1', authRouter)
   app.use('/api/v1/medications', medicationRouter)
   app.use('/api/v1/health-records', healthRecordsRouter)
+  app.use('/api/v1/reports', reportsRouter)
+  app.use('/api/v1/alerts', alertsRouter)
 
   return app
 }

@@ -1,39 +1,48 @@
-import { DailyReport, ApiResponse } from '@silver-care/shared'
+import { httpPost } from './http-client'
+
+interface DailyReport {
+  _id: string
+  date: string
+  userId: string
+  summary: {
+    medicationCheckinRate: number
+  }
+  alerts: Array<{
+    _id: string
+    type: string
+    message: string
+  }>
+}
+
+interface ApiResponse<T> {
+  success: boolean
+  data?: T
+  error?: string
+}
 
 export class ReportService {
   async generateDailyReport(date: string): Promise<DailyReport> {
-    const response = await this.callCloudFunction('generateDailyReport', { date })
-    if (response.success) {
-      return response.data
+    const response = await httpPost<DailyReport>('/reports/daily/generate', { date })
+    if (!response.success || !response.data) {
+      throw new Error(response.error || 'generate report failed')
     }
-    throw new Error(response.error)
+    return response.data
   }
 
   async getDailyReports(startDate: string, endDate: string): Promise<DailyReport[]> {
-    const response = await this.callCloudFunction('getDailyReports', { startDate, endDate })
-    if (response.success) {
-      return response.data
+    const response = await httpPost<DailyReport[]>('/reports/daily/list', { startDate, endDate })
+    if (!response.success || !response.data) {
+      throw new Error(response.error || 'get reports failed')
     }
-    throw new Error(response.error)
+    return response.data
   }
 
   async getLatestDailyReport(): Promise<DailyReport> {
-    const response = await this.callCloudFunction('getLatestDailyReport', {})
-    if (response.success) {
-      return response.data
+    const response = await httpPost<DailyReport>('/reports/daily/latest', {})
+    if (!response.success || !response.data) {
+      throw new Error(response.error || 'get latest report failed')
     }
-    throw new Error(response.error)
-  }
-
-  private async callCloudFunction(name: string, data: any): Promise<ApiResponse<any>> {
-    return new Promise((resolve, reject) => {
-      wx.cloud.callFunction({
-        name,
-        data,
-        success: (res: any) => resolve(res.result),
-        fail: (err: any) => reject(err),
-      })
-    })
+    return response.data
   }
 }
 

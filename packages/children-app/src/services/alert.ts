@@ -1,4 +1,19 @@
-import { Alert, ApiResponse } from '@silver-care/shared'
+import { httpPost } from './http-client'
+
+interface Alert {
+  _id: string
+  type: string
+  severity: 'low' | 'medium' | 'high'
+  message: string
+  timestamp: number
+  read?: boolean
+}
+
+interface ApiResponse<T> {
+  success: boolean
+  data?: T
+  error?: string
+}
 
 export class AlertService {
   async createAlert(data: {
@@ -6,45 +21,34 @@ export class AlertService {
     severity: 'low' | 'medium' | 'high'
     message: string
   }): Promise<Alert> {
-    const response = await this.callCloudFunction('createAlert', data)
-    if (response.success) {
-      return response.data
+    const response = await httpPost<Alert>('/alerts', data)
+    if (!response.success || !response.data) {
+      throw new Error(response.error || 'create alert failed')
     }
-    throw new Error(response.error)
+    return response.data
   }
 
   async getAlerts(unreadOnly?: boolean): Promise<Alert[]> {
-    const response = await this.callCloudFunction('getAlerts', { unreadOnly })
-    if (response.success) {
-      return response.data
+    const response = await httpPost<Alert[]>('/alerts/list', { unreadOnly })
+    if (!response.success || !response.data) {
+      throw new Error(response.error || 'get alerts failed')
     }
-    throw new Error(response.error)
+    return response.data
   }
 
   async markAlertAsRead(alertId: string): Promise<Alert> {
-    const response = await this.callCloudFunction('markAlertAsRead', { alertId })
-    if (response.success) {
-      return response.data
+    const response = await httpPost<Alert>(`/alerts/${alertId}/read`, {})
+    if (!response.success || !response.data) {
+      throw new Error(response.error || 'mark alert as read failed')
     }
-    throw new Error(response.error)
+    return response.data
   }
 
   async deleteAlert(alertId: string): Promise<void> {
-    const response = await this.callCloudFunction('deleteAlert', { alertId })
+    const response = await httpPost<void>(`/alerts/${alertId}/delete`, {})
     if (!response.success) {
-      throw new Error(response.error)
+      throw new Error(response.error || 'delete alert failed')
     }
-  }
-
-  private async callCloudFunction(name: string, data: any): Promise<ApiResponse<any>> {
-    return new Promise((resolve, reject) => {
-      wx.cloud.callFunction({
-        name,
-        data,
-        success: (res: any) => resolve(res.result),
-        fail: (err: any) => reject(err),
-      })
-    })
   }
 }
 
