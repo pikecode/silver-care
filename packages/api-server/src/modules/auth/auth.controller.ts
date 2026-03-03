@@ -12,9 +12,12 @@ export function wechatLoginController(req: Request, res: Response<ApiResponse<We
     return
   }
 
-  const data = createWechatLoginData(parsed.data)
-
-  res.status(200).json({ success: true, data })
+  try {
+    const data = createWechatLoginData(parsed.data)
+    res.status(200).json({ success: true, data })
+  } catch {
+    res.status(500).json({ success: false, error: 'internal server error' })
+  }
 }
 
 export function meController(req: Request, res: Response<ApiResponse<MeData>>): void {

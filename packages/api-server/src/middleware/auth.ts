@@ -33,13 +33,17 @@ export function requireAuth(req: Request, res: Response<ApiResponse>, next: Next
     return
   }
 
-  const authUser = getAuthUserByToken(token)
+  try {
+    const authUser = getAuthUserByToken(token)
 
-  if (!authUser) {
+    if (!authUser) {
+      res.status(401).json({ success: false, error: 'unauthorized' })
+      return
+    }
+
+    req.authUser = authUser
+    next()
+  } catch {
     res.status(401).json({ success: false, error: 'unauthorized' })
-    return
   }
-
-  req.authUser = authUser
-  next()
 }
