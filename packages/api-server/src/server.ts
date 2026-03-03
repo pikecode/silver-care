@@ -1,4 +1,5 @@
 import express, { Express } from 'express'
+import authRouter from './routes/auth'
 import healthRouter from './routes/health'
 
 export function createServer(): Express {
@@ -6,6 +7,7 @@ export function createServer(): Express {
 
   app.use(express.json())
   app.use('/api/v1', healthRouter)
+  app.use('/api/v1', authRouter)
 
   return app
 }
