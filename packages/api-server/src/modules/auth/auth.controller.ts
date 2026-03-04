@@ -15,7 +15,11 @@ export function wechatLoginController(req: Request, res: Response<ApiResponse<We
   try {
     const data = createWechatLoginData(parsed.data)
     res.status(200).json({ success: true, data })
-  } catch {
+  } catch (error) {
+    console.error('[auth.wechatLogin] Error:', {
+      error: error instanceof Error ? error.message : String(error),
+      input: { code: parsed.data?.code ? '[REDACTED]' : undefined },
+    })
     res.status(500).json({ success: false, error: 'internal server error' })
   }
 }

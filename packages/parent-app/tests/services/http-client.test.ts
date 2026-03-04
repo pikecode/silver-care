@@ -29,7 +29,7 @@ describe('httpPost', () => {
 
   it('rejects when wx.request fail callback is called', async () => {
     const request = jest.fn().mockImplementation(({ fail }) => {
-      fail(new Error('network error'))
+      fail({ errMsg: 'network error' })
     })
 
     ;(global as any).wx = {
