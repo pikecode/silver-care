@@ -1,8 +1,6 @@
 {
-  "name": "@silver-care/shared",
+  "name": "@silver-care/cloud-functions",
   "version": "0.1.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "test": "jest",
@@ -11,6 +9,7 @@
     "lint": "eslint src"
   },
   "dependencies": {
+    "@silver-care/shared": "workspace:*",
     "zod": "^3.22.0"
   },
   "devDependencies": {

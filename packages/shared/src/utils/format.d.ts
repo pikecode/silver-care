@@ -1,0 +1,11 @@
+import { BloodPressure } from '../types';
+export declare function formatDate(timestamp: number, format?: string): string;
+export declare function formatTime(timestamp: number, format?: string): string;
+export declare function formatDateTime(timestamp: number, format?: string): string;
+export declare function formatNumber(value: number, decimals?: number): string;
+export declare function formatCurrency(value: number, currency?: string): string;
+export declare function formatPercentage(value: number, decimals?: number): string;
+export declare function formatPhone(phone: string): string;
+export declare function maskPhone(phone: string): string;
+export declare function formatBloodPressure(bp: BloodPressure): string;
+export declare function formatBloodSugar(value: number): string;

@@ -1,0 +1,14 @@
+{
+  "name": "@silver-care/children-app",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "tsc --watch",
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "@silver-care/shared": "workspace:*",
+    "zod": "^3.22.0"
+  }
+}
